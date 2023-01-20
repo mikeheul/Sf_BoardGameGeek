@@ -18,6 +18,12 @@ framework:
     php_errors:
         log: true
 
+    http_client:
+        scoped_clients:
+            bgg:
+                base_uri: https://api.geekdo.com
+                # base_uri: https://boardgamegeek.com
+
 when@test:
     framework:
         test: true

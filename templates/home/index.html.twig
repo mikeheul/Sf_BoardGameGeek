@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Search{% endblock %}
+
+{% block body %}
+
+<h2 class="mt-5">GBB API</h2>
+
+<h4>Please search a game</h4>
+<div class="form-group">
+    <input class="form-control mb-4" type="text" name="search" id="search" placeholder="Search...">
+    <select class="form-control form-control-lg" name="games" id="games"></select>
+</div>
+
+<div class="game-info">
+    <img class="img" id="game-img" src="{{ asset("img/image.svg") }}" alt="">
+    <div class="desc">
+        <h3 id="title"></h3>
+        <p class="text" id="text"></p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        window.addEventListener('DOMContentLoaded', (event) => {
+
+            // zone de recherche et liste déroulante
+            const search = document.querySelector('#search');
+            const select = document.querySelector('#games');
+            const img = document.querySelector('#game-img');
+            const title = document.querySelector('#title');
+            const p = document.querySelector('#text');
+
+            select.addEventListener('change', (e) => {
+                e.preventDefault();
+                const gameId = select.selectedOptions[0].value
+                const urlGame = '/game';
+                fetch(urlGame, {
+                    method: 'POST',
+                    headers: {
+                       'Content-Type': 'application/x-www-form-urlencoded',                 
+                       'Accept': '*/*' 
+                    },            
+                    // paramètre de la route du controller (gameId)
+                    body: new URLSearchParams({
+                        'gameId' : gameId
+                    }) 
+                })
+                .then(async (response) => {
+                    const rep = await response.json();
+                    console.log(rep);
+                    img.src = rep["boardgame"]["image"] ? rep["boardgame"]["image"] : '../img/image.svg';
+                    p.innerHTML = rep["boardgame"]["description"]; 
+                    title.innerHTML = rep["boardgame"]["name"];
+                })
+            })
+            
+            // à la sortie de l'input de recherche
+            search.addEventListener('focusout', (e) => {
+                // vider la liste déroulante
+                select.innerText = null;
+                e.preventDefault();
+                // valeur saisie dans l'input
+                const searchValue = search.value;
+                // URL à fetch (HomeController)
+                const url = '/games';
+                fetch(url, { 
+                    method: 'POST',
+                    headers: {
+                       'Content-Type': 'application/x-www-form-urlencoded',                 
+                       'Accept': '*/*' 
+                    },            
+                    // paramètre de la route du controller (searchValue)
+                    body: new URLSearchParams({
+                        'searchValue' : searchValue
+                    }) 
+                })
+                // création des options du select
+                .then(async (response) => {
+                    const rep = await response.json();
+                    // boucler sur les résultats de l'API
+                    for(r in rep["boardgame"]) {
+                        let option = document.createElement('option');
+                        option.innerText = rep["boardgame"][r]["name"] + " (" + rep["boardgame"][r]["yearpublished"] + ")";
+                        option.value = rep["boardgame"][r]["@attributes"]["objectid"];
+                        select.append(option);
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock javascript %}

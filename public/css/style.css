@@ -1,0 +1,31 @@
+.game-info {
+    display: flex;
+    gap: 20px;
+}
+
+.img {
+    margin-top: 20px;
+    width: 350px;
+    /* height: 400px; */
+    object-fit: cover;
+    object-position: top;
+}
+
+.desc {
+    margin-top: 20px;
+    width: 50%;
+}
+
+@media(max-width:750px) {
+    .game-info {
+        flex-direction: column;
+    }
+    .img {
+        width: 100%;
+        height: auto;
+    } 
+    
+    .desc {
+        width: 100%;
+    }
+}
