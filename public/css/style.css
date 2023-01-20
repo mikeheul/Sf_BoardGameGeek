@@ -1,3 +1,16 @@
+html,
+body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
 .game-info {
     display: flex;
     gap: 20px;
@@ -14,6 +27,19 @@
 .desc {
     margin-top: 20px;
     width: 50%;
+}
+
+footer {
+    flex-shrink: 0;
+    width: 100%;
+    text-align: center;
+    background: rgb(66, 66, 66);
+    color: #fff;
+    padding: 20px;
+    margin-top: 50px;
+}
+footer p {
+    margin-bottom: 0;
 }
 
 @media(max-width:750px) {
